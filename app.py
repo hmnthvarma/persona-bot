@@ -27,14 +27,17 @@ if "chat_history" not in st.session_state:
 
 if st.button("Send"):
     prompt = f"{custom_prompt}\nUser: {user_input}\nAI:"
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=150,
-        temparature=0.7
+    response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",  # or gpt-4 if you have access
+    messages=[
+        {"role": "system", "content": custom_prompt},
+        {"role": "user", "content": user_input}
+        ],
+        temperature=0.7,
+        max_tokens=150
     )
-    reply = response['choices'][0]['text'].strip()
-    st.session_state.chat_history.append((user_input,reply))
+    reply = response['choices'][0]['message']['content'].strip()
+st.session_state.chat_history.append((user_input,reply))
 
 # Display chat history
 
